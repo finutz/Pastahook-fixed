@@ -183,8 +183,6 @@ void AntiAim::rage(UserCmd* cmd, const Vector& previousViewAngles, const Vector&
             float yaw = 0.f;
             static float staticYaw = 0.f;
             static bool flipJitter = false;
-            if (sendPacket)
-                flipJitter ^= 1;
             bool isFreestanding{ false };
             if (config->rageAntiAim[static_cast<int>(moving_flag1)].atTargets && localPlayer->moveType() != MoveType::LADDER && !willgetstabbed)
             {
@@ -195,7 +193,7 @@ void AntiAim::rage(UserCmd* cmd, const Vector& previousViewAngles, const Vector&
                 for (int i = 1; i <= interfaces->engine->getMaxClients(); ++i) {
                     const auto entity{ interfaces->entityList->getEntity(i) };
                     if (!entity || entity == localPlayer.get() || entity->isDormant() || !entity->isAlive()
-                        || !entity->isOtherEnemy(localPlayer.get()) || entity->gunGameImmunity())
+                        || !entity->isOtherEnemy(localPlayer.get()))
                         continue;
 
                     const auto angle{ AimbotFunction::calculateRelativeAngle(localPlayerEyePosition, entity->getAbsOrigin(), cmd->viewangles + aimPunch) };
@@ -224,7 +222,7 @@ void AntiAim::rage(UserCmd* cmd, const Vector& previousViewAngles, const Vector&
                     }
 
                     auto enemyDist = entity->getAbsOrigin().distTo(localPlayer->getAbsOrigin());
-                    if (enemyDist > 220)
+                    if (enemyDist > 469)
                     {
                         willgetstabbed = false;
                         continue;
@@ -331,7 +329,7 @@ void AntiAim::rage(UserCmd* cmd, const Vector& previousViewAngles, const Vector&
             }
             if (config->rageAntiAim[static_cast<int>(moving_flag1)].freestand && config->freestandKey.isActive() && !willgetstabbed)
             {
-                constexpr std::array positions = { -35.0f, 0.0f, 35.0f};
+                constexpr std::array positions = { -30.0f, 0.0f, 30.0f};
                 std::array active = { false, false, false };
                 const auto fwd = Vector::fromAngle2D(cmd->viewangles.y);
                 const auto side = fwd.crossProduct(Vector::up());
